@@ -190,8 +190,7 @@ function showCustomContextMenu(event, show = true) {
 }
 
 
-//Extension function for fabric
-// @ts-ignore
+//Extension function for fabric add the custom code from fabric.d.ts to get doc
 fabric.Canvas.prototype.getItemsByName = function(name) {
   var objectList = [],
       objects = this.getObjects();

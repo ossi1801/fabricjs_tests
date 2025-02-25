@@ -292,7 +292,12 @@ interface ICollection<T> {
      * @param [type] When specified, only objects of this type are returned
      */
     getObjects(type?: string): Object[];
-
+    /**
+     * Returns an array of children objects of this instance
+     * Name parameter introduced OssiH in his custom program
+     * @param [name] When specified, only objects that have this name are returned
+     */
+    getItemsByName(name?: string):Object[];
     /**
      * Returns object at specified index
      * @return thisArg
