@@ -1,10 +1,13 @@
 //@ts-check
 const { Canvas, StaticCanvas, IText,Point } = fabric;
-//https://stackoverflow.com/questions/33692728/fabric-js-increase-font-size-instead-of-just-scaling-when-resize-with-mouse
-var canvas = new Canvas('canvas');
+var canvas = new Canvas('canvas',{
+  fireRightClick: true,  // <-- enable firing of right click events
+  //fireMiddleClick: true, // <-- enable firing of middle click events
+  stopContextMenu: true, // <--  prevent context menu from showing
+});
 
 $(function () { //onstart
-
+  canvas.contextMenuVisible = false;
   //https://api.jquery.com/jQuery.holdReady/
   //$.when(canvas,$.ready).done( () =>{ //when canvas is loaded
 
@@ -36,10 +39,25 @@ $(function () { //onstart
     resetAngle();
   });
 
-
+  canvas.on('mouse:down', (event) => {
+    //console.log(event.e);
+    switch (event.e.button) {
+      case 0: //left click
+        showCustomContextMenu(event, false);
+        break;
+      case 1:
+        //console.log("middle click");
+        break;
+      case 2: //right click
+        showCustomContextMenu(event);
+        break;
+      default:
+        break;
+    }
+  });
   //USELESSSSSSSSSSSSSSss
   canvas.on('object:selected', function (options) {
-    //  console.log(options);
+    //  console.log("selected");
     //   if (options.target) {
     //     $("textarea#add-text-value").val(options.target.text);
     //     $("#text-font-size").val(options.target.fontSize);
@@ -138,3 +156,49 @@ function createObjects(array) {
   }
   canvas.renderAll();
 }
+
+
+function showCustomContextMenu(event, show = true) {
+  if (show && canvas.contextMenuVisible == false) {
+    canvas.contextMenuVisible = true;
+    var pointer = canvas.getPointer(event.e);
+    var menuItem = new IText("Menu item 1", {
+      left: pointer.x,
+      top: pointer.y,
+      fontSize: 20,
+      lockUniScaling: true,
+      fontFamily: "arial",
+      fill: '#000000',
+      hoverCursor: "pointer"
+    });
+    menuItem.name = "menu_items"; //tag the object
+    //menuItem.selectable = false; //cant use otherwise .on func wont work?
+    menuItem.on("selected", (element) => {
+      // do stuff here
+      console.log("selected", element);
+    });
+    canvas.add(menuItem);
+    canvas.renderAll();
+  }
+  else if (show == false && canvas.contextMenuVisible) {
+    var menu_items = canvas.getItemsByName("menu_items");
+    //console.log(menu_items);
+    canvas.remove(...menu_items); //remove automaticallly renders the page after remove
+    canvas.contextMenuVisible = false;
+  }
+
+}
+
+
+//Extension function for fabric
+// @ts-ignore
+fabric.Canvas.prototype.getItemsByName = function(name) {
+  var objectList = [],
+      objects = this.getObjects();
+  for (var i = 0, len = this.size(); i < len; i++) {
+    if (objects[i].name && objects[i].name === name) {
+      objectList.push(objects[i]);
+    }
+  }
+  return objectList;
+};
