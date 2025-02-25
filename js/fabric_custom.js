@@ -2,9 +2,7 @@
 const { Canvas, StaticCanvas, IText,Point } = fabric;
 //https://stackoverflow.com/questions/33692728/fabric-js-increase-font-size-instead-of-just-scaling-when-resize-with-mouse
 var canvas = new Canvas('canvas');
-/**
- * @type {fabric.Object} 
- */
+
 $(function () { //onstart
 
   //https://api.jquery.com/jQuery.holdReady/
@@ -26,6 +24,12 @@ $(function () { //onstart
   //click for submit (add text) 
   $('#add-text-btn').on("click", function () {
     addText();
+    createObjects( //Array of images etc
+      [
+        new CanvasObject(100, 100, 50, 50,true),
+        new CanvasObject(200, 200, 50, 50)
+      ]
+    );
   });
   //Reset object angle
   $('#reset-orietation-btn').on("click", function () {
@@ -80,13 +84,12 @@ function addText() {
 
   let add_text_value = $('#add-text-value').val();
   let txt = add_text_value == undefined ? "" : "" + add_text_value;
-  //var txtfontfamily = $('#font-family').val();
   var new_text = new IText(txt, {
     left: 200,
     top: 200,
     fontSize: txtfontsize,
     lockUniScaling: true,
-    //fontFamily: txtfontfamily,
+    fontFamily: "arial",
     fill: '#000000'
   });
   // new_text.lockRotation = true; //rotate disable
@@ -98,16 +101,40 @@ function addText() {
 function resetAngle() {
   let active = canvas.getActiveObject();
   if (active) {
-    //console.log(active);
-    //console.log(active.getBoundingRect());
-    //var bound_rect = active.getBoundingRect();
-    active.rotate(0); //????????????????????????????????????????????????????????????????????????????????????????????????????????
-    //active.set("angle", 0);
-    //var originPoint = active.getPointByOrigin("left","top");
-    //active.top = bound_rect.top*2;//+bound_rect.height;
-    //active.left = bound_rect.left/2+bound_rect.width;
-    // console.log(originPoint);
+    active.rotate(0); //?
     canvas.renderAll();
    
   }
+}
+class CanvasObject {
+  constructor(x,y,width,height,isEnabled=false) { 
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.isEnabled = isEnabled;
+  }
+}
+/**
+ * @param {Array<CanvasObject>} array
+ */
+function createObjects(array) {
+  for (let i = 0; i < array.length; i++) {
+    const element = array[i];
+
+    var htmlImage = new Image(0, 0); //html image size values do not matter.... thanks fabric
+    htmlImage.src = "../images/lock.svg";//These src's should be preloaded to memory to avoid any runtime load when creating objects
+
+    var img = new fabric.Image(htmlImage); // index this htmlimge from preloaded array (preloadedimgs[i])
+    img.scaleToWidth(element.width); //interdasting functions 
+    img.scaleToHeight(element.height);
+    img.left = element.x;
+    img.top = element.y;
+    img.selectable = element.isEnabled;
+    img.hoverCursor= element.isEnabled ? "move" :"default";
+    //img.hasControls = element.isEnabled;
+    //img.hasBorders = element.isEnabled;
+    canvas.add(img);
+  }
+  canvas.renderAll();
 }
