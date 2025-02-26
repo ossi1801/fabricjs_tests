@@ -11,22 +11,9 @@ $(function () { //onstart
   //https://api.jquery.com/jQuery.holdReady/
   //$.when(canvas,$.ready).done( () =>{ //when canvas is loaded
 
-  //keyup for fontsize
-  $('#text-font-size').on("keyup", function () {
-    var val = $(this).val();
-    if (isNaN(val)) {
-      alert('please enter number');
-      $(this).val('');
-    }
-    var activeObject = canvas.getActiveObject();
-    if (activeObject == null) return;
-    activeObject.fontSize = val;
-    canvas.renderAll();
-  });
-
   //click for submit (add text) 
   $('#add-text-btn').on("click", function () {
-    addText();
+    addText(200,200);
     createObjects( //Array of images etc
       [
         new CanvasObject(100, 100, 50, 50,true),
@@ -68,20 +55,10 @@ $(function () { //onstart
   //USELESSSSSSSSSSSSSSss
   canvas.on('object:selected', function (options) {
     //  console.log("selected");
-    //   if (options.target) {
-    //     $("textarea#add-text-value").val(options.target.text);
-    //     $("#text-font-size").val(options.target.fontSize);
-    //   }
-    // });
     // canvas.on('object:scaling', function(event) {
-    //   if (event.target) {
-    //     $("textarea#add-text-value").val(event.target.text);
-    //     $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
-    //   }
+    //   )};
   });
-  canvas.on("object:rotating", function() {
-   
-  })
+  canvas.on("object:rotating", function() {});
   canvas.on('object:modified', function (event) {
     console.log(event);
     if (event.target) {
@@ -97,18 +74,16 @@ $(function () { //onstart
 // const rel = imageObj.toLocalPoint(point, 'left', 'top')
 // console.log(rel.x, rel.y)
 
-function addText() {
-  let txtfontsize = 40;
-  let text_font_size_val = $('#text-font-size').val()
-  if (text_font_size_val) {
-    txtfontsize = text_font_size_val;
-  }
-
+/**
+ * @param {Number} x
+ * @param {Number} y
+ */
+function addText(x,y,txtfontsize = 40) {
   let add_text_value = $('#add-text-value').val();
   let txt = add_text_value == undefined ? "" : "" + add_text_value;
   var new_text = new IText(txt, {
-    left: 200,
-    top: 200,
+    left: x,
+    top: y,
     fontSize: txtfontsize,
     lockUniScaling: true,
     fontFamily: "arial",
@@ -169,7 +144,8 @@ function showCustomContextMenu(event, show = true) {
   if (show && canvas.contextMenuVisible == false) {
     canvas.contextMenuVisible = true;
     createContextMenuItem("Menu item 1",event,menuItemClicked);
-    createContextMenuItem("Add new text",event,addText);
+    var pointer = canvas.getPointer(event.e);
+    createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y));
     canvas.renderAll();
   }
   else if (show == false && canvas.contextMenuVisible) {
@@ -205,6 +181,13 @@ function createContextMenuItem(item_text,event,delegate){
   menuItem.name = "menu_items"; //tag the object
   menuItem.hasControls = false;
   menuItem.hasBorders = false;
+  // canvas.on("mouse:over",(e) => {
+  //   console.log(e);
+  //   if(e.target){
+  //     e.target.fill='#ffffff';
+  //   }
+  //   canvas.renderAll();
+  // });
   menuItem.on("selected", elem => delegate(elem)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
   canvas.add(menuItem);
 }
@@ -212,7 +195,7 @@ function createContextMenuItem(item_text,event,delegate){
  * @param { fabric.IEvent<Event>} elem
  */
 function menuItemClicked(elem){
-  console.log("You just clicked "+ elem.target?.text);
+  alert("You just clicked "+ elem.target?.text);
 }
 
 
