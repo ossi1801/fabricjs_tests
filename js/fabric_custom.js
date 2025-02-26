@@ -38,6 +38,16 @@ $(function () { //onstart
   $('#reset-orietation-btn').on("click", function () {
     resetAngle();
   });
+  //If user presses delete on active object delete it
+  $("body").on("keydown", (e) => {
+    if (e.key === "Delete") {
+      let a = canvas.getActiveObjects();
+      if (a.length>0) {
+        canvas.discardActiveObject(); //If not discard and user has multi selection then -> objects are not removed until left click???
+        canvas.remove(...a);
+      }
+    }
+  });
 
   canvas.on('mouse:down', (event) => {
     //console.log(event.e);
@@ -75,13 +85,7 @@ $(function () { //onstart
   canvas.on('object:modified', function (event) {
     console.log(event);
     if (event.target) {
-      //   event.target.fontSize *= event.target.scaleX;
-      //   event.target.fontSize = event.target.fontSize.toFixed(0);
-      //   event.target.scaleX = 1;
-      //   event.target.scaleY = 1;
-      //   event.target._clearCache();
-      //  $("textarea#add-text-value").val(event.target.text);
-      //  $("#text-font-size").val(event.target.fontSize);
+
     }
   });
 
@@ -164,7 +168,8 @@ function createObjects(array) {
 function showCustomContextMenu(event, show = true) {
   if (show && canvas.contextMenuVisible == false) {
     canvas.contextMenuVisible = true;
-    createContextMenuItem(event,console.log);
+    createContextMenuItem("Menu item 1",event,menuItemClicked);
+    createContextMenuItem("Add new text",event,addText);
     canvas.renderAll();
   }
   else if (show == false && canvas.contextMenuVisible) {
@@ -176,14 +181,21 @@ function showCustomContextMenu(event, show = true) {
 
 }
 /**
+ * @param { String} item_text
  * @param { fabric.IEvent<MouseEvent>} event
  * @param { Function} delegate
  */
-function createContextMenuItem(event,delegate){
+function createContextMenuItem(item_text,event,delegate){
+  var menu_items = canvas.getItemsByName("menu_items");
+  let menu_items_count = menu_items.length;
+  let offset = 0;
+  if(menu_items_count>0 && menu_items[0].height){
+    offset = menu_items[0].height * menu_items_count;
+  }
   var pointer = canvas.getPointer(event.e);
-  var menuItem = new IText("Menu item 1", {
+  var menuItem = new IText(item_text, {
     left: pointer.x,
-    top: pointer.y,
+    top: pointer.y+offset,
     fontSize: 20,
     lockUniScaling: true,
     fontFamily: "arial",
@@ -195,6 +207,12 @@ function createContextMenuItem(event,delegate){
   menuItem.hasBorders = false;
   menuItem.on("selected", elem => delegate(elem)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
   canvas.add(menuItem);
+}
+/**
+ * @param { fabric.IEvent<Event>} elem
+ */
+function menuItemClicked(elem){
+  console.log("You just clicked "+ elem.target?.text);
 }
 
 
