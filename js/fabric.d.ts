@@ -294,10 +294,16 @@ interface ICollection<T> {
     getObjects(type?: string): Object[];
     /**
      * Returns an array of children objects of this instance
-     * Name parameter introduced OssiH in his custom program
+     * Name parameter introduced by fabric_custom.js custom program
      * @param [name] When specified, only objects that have this name are returned
      */
     getItemsByName(name?: string):Object[];
+    
+    /**
+     * Returns true if context menu is currently visible
+     * Introduced by fabric_custom.js custom program
+     */
+    contextMenuVisible : boolean|undefined;
     /**
      * Returns object at specified index
      * @return thisArg

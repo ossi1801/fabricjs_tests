@@ -157,27 +157,14 @@ function createObjects(array) {
   canvas.renderAll();
 }
 
-
+/**
+ * @param { fabric.IEvent<MouseEvent>} event
+ * @param { Boolean} show
+ */
 function showCustomContextMenu(event, show = true) {
   if (show && canvas.contextMenuVisible == false) {
     canvas.contextMenuVisible = true;
-    var pointer = canvas.getPointer(event.e);
-    var menuItem = new IText("Menu item 1", {
-      left: pointer.x,
-      top: pointer.y,
-      fontSize: 20,
-      lockUniScaling: true,
-      fontFamily: "arial",
-      fill: '#000000',
-      hoverCursor: "pointer"
-    });
-    menuItem.name = "menu_items"; //tag the object
-    //menuItem.selectable = false; //cant use otherwise .on func wont work?
-    menuItem.on("selected", (element) => {
-      // do stuff here
-      console.log("selected", element);
-    });
-    canvas.add(menuItem);
+    createContextMenuItem(event,console.log);
     canvas.renderAll();
   }
   else if (show == false && canvas.contextMenuVisible) {
@@ -187,6 +174,27 @@ function showCustomContextMenu(event, show = true) {
     canvas.contextMenuVisible = false;
   }
 
+}
+/**
+ * @param { fabric.IEvent<MouseEvent>} event
+ * @param { Function} delegate
+ */
+function createContextMenuItem(event,delegate){
+  var pointer = canvas.getPointer(event.e);
+  var menuItem = new IText("Menu item 1", {
+    left: pointer.x,
+    top: pointer.y,
+    fontSize: 20,
+    lockUniScaling: true,
+    fontFamily: "arial",
+    fill: '#000000',
+    hoverCursor: "pointer"
+  });
+  menuItem.name = "menu_items"; //tag the object
+  menuItem.hasControls = false;
+  menuItem.hasBorders = false;
+  menuItem.on("selected", elem => delegate(elem)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
+  canvas.add(menuItem);
 }
 
 
@@ -201,3 +209,5 @@ fabric.Canvas.prototype.getItemsByName = function(name) {
   }
   return objectList;
 };
+//Extension for contextmenu
+fabric.Canvas.prototype.contextMenuVisible = false;
