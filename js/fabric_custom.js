@@ -149,7 +149,7 @@ function showCustomContextMenu(event, show = true) {
     canvas.contextMenuVisible = true;
     var pointer = canvas.getPointer(event.e);
 
-    var menuItemBgr = new Rect(
+    var menuBgr = new Rect(
       {
         //left:  pointer.x,
         top:  pointer.y,
@@ -169,7 +169,7 @@ function showCustomContextMenu(event, show = true) {
     );
     var item1 = createContextMenuItem("Menu item 1",event,menuItemClicked);
     var item2 = createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y),20);
-    var group = new fabric.Group([menuItemBgr,item1, item2 ], {
+    var group = new fabric.Group([menuBgr,item1, item2 ], {
       left:  pointer.x,
       top: pointer.y,     
       hasControls: false,
@@ -193,13 +193,33 @@ function showCustomContextMenu(event, show = true) {
  * @param { String} item_text
  * @param { fabric.IEvent<MouseEvent>} event
  * @param { Function} delegate
- * @returns {fabric.IText}
+ * @returns {fabric.Group}
  */
 function createContextMenuItem(item_text,event,delegate,offset=0){
   var pointer = canvas.getPointer(event.e);
-  var fillColor = '#cccccc';
-  var activeColor =  '#8f8e8b';
-  var menuItem = new IText(item_text, {
+  var fillColor = '#313131';
+  var activeColor =  '#0094ff'; //#384a57
+  var menuItemBgr = new Rect(
+    {
+      //left:  pointer.x,
+      top: pointer.y+15+offset,
+      originX: 'left',
+      //originY: 'center',
+      width: 200,
+      height: 20,
+      rx: 5,
+      ry: 5,
+      fill: '#313131',
+      opacity: 0.1,
+      hasControls: false,
+      hasBorders: false,
+      //selectable: true,
+      hoverCursor: "default",
+      name:""
+    }
+  );
+
+  var menuText = new IText(item_text, {
     left: 15,//pointer.x+10,
     top: pointer.y+15+offset,
     originX: 'left',
@@ -207,23 +227,22 @@ function createContextMenuItem(item_text,event,delegate,offset=0){
     fontSize: 20,
     lockUniScaling: true,
     fontFamily: "arial",
-    fill: fillColor,
+    fill: '#ffffff',
     hoverCursor: "pointer",
-    name : "menu_texts" //tag the object
+    name : "menu_texts", //tag the object
+    hasControls: false,
+    hasBorders: false,
+    //selectable: false,
   });
-  menuItem.hasControls = false;
-  menuItem.hasBorders = false;
-  //fabric.util.
-  menuItem.on("mousedown", e => delegate(e)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
-  menuItem.on("mouseover", e => {e.target.set("fill" , activeColor); canvas.renderAll();});
-  menuItem.on("mouseout", e => {e.target.set("fill" , fillColor); canvas.renderAll();});
-  // canvas.on("mouse:over",(e) => {
-  //   console.log(e);
-  //   if(e.target){
-  //     e.target.fill='#ffffff';
-  //   }
-  //   canvas.renderAll();
-  // });
+  var menuItem = new Group([menuText,menuItemBgr],{
+    hasControls: false,
+    hasBorders: false,
+    subTargetCheck: true
+  });
+  menuItemBgr.on("mousedown", e => delegate(e)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
+  menuItemBgr.on("mouseover", e => {e.target.set("fill" , activeColor); canvas.renderAll();});
+  menuItemBgr.on("mouseout", e => {e.target.set("fill" , fillColor); canvas.renderAll();});
+
   return menuItem;//canvas.add(menuItem);
 }
 /**
