@@ -156,7 +156,7 @@ function showCustomContextMenu(event, show = true) {
         originX: 'left',
         //originY: 'center',
         width: 200,
-        height: 100,
+        height: 50,
         rx: 5,
         ry: 5,
         fill: '#313131',   
@@ -167,9 +167,12 @@ function showCustomContextMenu(event, show = true) {
         name:""
       }
     );
+    //Todo add "spacer" option that draws a line in context menu below an item
     var item1 = createContextMenuItem("Menu item 1",event,menuItemClicked);
-    var item2 = createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y),20);
-    var group = new fabric.Group([menuBgr,item1, item2 ], {
+    var item2 = createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y),30);
+    var item3 = createContextMenuItem("Add new rectangle",event, e => alert("TODO RECTANGLE?"),60);
+    var itemArray = [menuBgr,item1, item2,item3 ];
+    var group = new fabric.Group(itemArray, {
       left:  pointer.x,
       top: pointer.y,     
       hasControls: false,
@@ -178,6 +181,7 @@ function showCustomContextMenu(event, show = true) {
       name : "menu_group",
       subTargetCheck: true // allows the 
     });
+    menuBgr.set("height", 20+ (itemArray.length-1)*30); // Dynamic sizing
     canvas.add(group);
     canvas.renderAll();
   }
@@ -202,19 +206,20 @@ function createContextMenuItem(item_text,event,delegate,offset=0){
   var menuItemBgr = new Rect(
     {
       //left:  pointer.x,
-      top: pointer.y+15+offset,
+      top: pointer.y+11+offset,
       originX: 'left',
       //originY: 'center',
       width: 200,
-      height: 20,
+      height: 28,
       rx: 5,
       ry: 5,
       fill: '#313131',
       opacity: 0.1,
       hasControls: false,
       hasBorders: false,
+      hoverCursor: "pointer",
       //selectable: true,
-      hoverCursor: "default",
+      //hoverCursor: "default",
       name:""
     }
   );
@@ -232,7 +237,7 @@ function createContextMenuItem(item_text,event,delegate,offset=0){
     name : "menu_texts", //tag the object
     hasControls: false,
     hasBorders: false,
-    //selectable: false,
+    selectable: false,
   });
   var menuItem = new Group([menuText,menuItemBgr],{
     hasControls: false,
