@@ -1,24 +1,38 @@
 <!DOCTYPE html>
+
 <head>
   <script src="./js/fabric.js"></script>
   <script src="./js/jquery.min.js"></script>
-  <link rel="stylesheet" href="./style.css"></style>
+  <link rel="stylesheet" href="./style.css">
+  </style>
 </head>
 <html>
-<body>
-  <div class="canvas-bgr" width="1000" height="900">
-  <canvas id='canvas' width="1000" height="900" style="border:#000 1px solid;"></canvas>
-  </div>
-  <button id="add-text-btn">Add text</button>
-  <button id="reset-orietation-btn">Reset orietation for active item</button>
-  <br>
-  <br>
-  <textarea rows="7" id="add-text-value">Your Text Here</textarea>
-  <br>
-</body>
 
-<script src="./js/fabric_custom.js"></script> <!-- This code is page/fabric/jquery dependent and should be loaded last-->
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar light-grey bar-block">
+    <h3 class="bar-item">Menu</h3>
+    <a href="#" class="bar-item button">Link 1</a>
+    <a href="#" class="bar-item button">Link 2</a>
+    <a href="#" class="bar-item button">Link 3</a>
+  </div>
+
+  <!-- Page Content -->
+  <div class="page">
+    <canvas id='canvas'></canvas>
+    <!-- <canvas id='canvas' width="1000" height="700" style="border:#000 1px solid;"></canvas> -->
+    <button id="add-text-btn">Add text</button>
+    <button id="reset-orietation-btn">Reset orietation for active item</button>
+    <br>
+    <br>
+    <textarea rows="7" id="add-text-value">Your Text Here</textarea>
+    <br>
+</body>
+</div>
+
+<script src="./js/fabric_custom.js"></script>
+<!-- This code is page/fabric/jquery dependent and should be loaded last-->
 
 
 </html>
-

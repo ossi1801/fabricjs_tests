@@ -1,5 +1,5 @@
 //@ts-check
-const { Canvas, StaticCanvas, IText,Point } = fabric;
+const { Canvas, StaticCanvas, IText,Point,Rect,Group } = fabric;
 var canvas = new Canvas('canvas',{
   fireRightClick: true,  // <-- enable firing of right click events
   //fireMiddleClick: true, // <-- enable firing of middle click events
@@ -7,6 +7,7 @@ var canvas = new Canvas('canvas',{
 });
 
 $(function () { //onstart
+  resizeCanvas();
   canvas.contextMenuVisible = false;
   //https://api.jquery.com/jQuery.holdReady/
   //$.when(canvas,$.ready).done( () =>{ //when canvas is loaded
@@ -147,6 +148,8 @@ function showCustomContextMenu(event, show = true) {
     var pointer = canvas.getPointer(event.e);
     createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y));
     canvas.renderAll();
+    //TODO create group for menu items  => name the group => check if delete destroys entire group
+    //if yes menuItem name(s) can be used as id's ?
   }
   else if (show == false && canvas.contextMenuVisible) {
     var menu_items = canvas.getItemsByName("menu_items");
@@ -176,11 +179,12 @@ function createContextMenuItem(item_text,event,delegate){
     lockUniScaling: true,
     fontFamily: "arial",
     fill: '#000000',
-    hoverCursor: "pointer"
+    hoverCursor: "pointer",
+    name : "menu_items" //tag the object
   });
-  menuItem.name = "menu_items"; //tag the object
   menuItem.hasControls = false;
   menuItem.hasBorders = false;
+  menuItem.on("selected", elem => delegate(elem)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
   // canvas.on("mouse:over",(e) => {
   //   console.log(e);
   //   if(e.target){
@@ -188,7 +192,18 @@ function createContextMenuItem(item_text,event,delegate){
   //   }
   //   canvas.renderAll();
   // });
-  menuItem.on("selected", elem => delegate(elem)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
+  var menuItemBgr = new Rect(
+    {
+      left: menuItem.left,
+      top: menuItem.top,
+      width: menuItem.width,
+      height: menuItem.height,
+      fill: '#FF0000',
+      name:"menu_items"
+    }
+  );
+  
+  canvas.add(menuItemBgr);
   canvas.add(menuItem);
 }
 /**
@@ -212,3 +227,8 @@ fabric.Canvas.prototype.getItemsByName = function(name) {
 };
 //Extension for contextmenu
 fabric.Canvas.prototype.contextMenuVisible = false;
+
+function resizeCanvas() {
+  canvas.setHeight(window.innerHeight*0.8);
+  canvas.setWidth(window.innerWidth*0.74);
+}
