@@ -5,7 +5,10 @@ var canvas = new Canvas('canvas',{
   //fireMiddleClick: true, // <-- enable firing of middle click events
   stopContextMenu: true, // <--  prevent context menu from showing
 });
-
+function resizeCanvas() {
+  canvas.setHeight(window.innerHeight*0.8);
+  canvas.setWidth(window.innerWidth*0.84);
+}
 $(function () { //onstart
   resizeCanvas();
   canvas.contextMenuVisible = false;
@@ -144,15 +147,40 @@ function createObjects(array) {
 function showCustomContextMenu(event, show = true) {
   if (show && canvas.contextMenuVisible == false) {
     canvas.contextMenuVisible = true;
-    createContextMenuItem("Menu item 1",event,menuItemClicked);
     var pointer = canvas.getPointer(event.e);
-    createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y));
+
+    var menuItemBgr = new Rect(
+      {
+        left: pointer.x,
+        top:  pointer.y,
+        width: 200,
+        height: 100,
+        fill: '#000000',   
+        hasControls: false,
+        hasBorders: false,
+        selectable: false,
+        hoverCursor: "default",
+        name:""
+      }
+    );
+    var item1 = createContextMenuItem("Menu item 1",event,menuItemClicked);
+    var item2 = createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y),20);
+    var group = new fabric.Group([menuItemBgr,item1, item2 ], {
+      left:  pointer.x,
+      top: pointer.y,     
+      hasControls: false,
+      hasBorders: false,
+      //selectable: false,
+      name : "menu_group",
+      subTargetCheck: true // allows the 
+    });
+    canvas.add(group);
     canvas.renderAll();
     //TODO create group for menu items  => name the group => check if delete destroys entire group
     //if yes menuItem name(s) can be used as id's ?
   }
   else if (show == false && canvas.contextMenuVisible) {
-    var menu_items = canvas.getItemsByName("menu_items");
+    var menu_items = canvas.getItemsByName("menu_group");
     //console.log(menu_items);
     canvas.remove(...menu_items); //remove automaticallly renders the page after remove
     canvas.contextMenuVisible = false;
@@ -163,28 +191,23 @@ function showCustomContextMenu(event, show = true) {
  * @param { String} item_text
  * @param { fabric.IEvent<MouseEvent>} event
  * @param { Function} delegate
+ * @returns {fabric.IText}
  */
-function createContextMenuItem(item_text,event,delegate){
-  var menu_items = canvas.getItemsByName("menu_items");
-  let menu_items_count = menu_items.length;
-  let offset = 0;
-  if(menu_items_count>0 && menu_items[0].height){
-    offset = menu_items[0].height * menu_items_count;
-  }
+function createContextMenuItem(item_text,event,delegate,offset=0){
   var pointer = canvas.getPointer(event.e);
   var menuItem = new IText(item_text, {
-    left: pointer.x,
-    top: pointer.y+offset,
+    left: pointer.x+10,
+    top: pointer.y+10+offset,
     fontSize: 20,
     lockUniScaling: true,
     fontFamily: "arial",
-    fill: '#000000',
+    fill: '#FF0000',
     hoverCursor: "pointer",
-    name : "menu_items" //tag the object
+    name : "menu_texts" //tag the object
   });
   menuItem.hasControls = false;
   menuItem.hasBorders = false;
-  menuItem.on("selected", elem => delegate(elem)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
+  menuItem.on("mousedown", elem => delegate(elem)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
   // canvas.on("mouse:over",(e) => {
   //   console.log(e);
   //   if(e.target){
@@ -192,19 +215,7 @@ function createContextMenuItem(item_text,event,delegate){
   //   }
   //   canvas.renderAll();
   // });
-  var menuItemBgr = new Rect(
-    {
-      left: menuItem.left,
-      top: menuItem.top,
-      width: menuItem.width,
-      height: menuItem.height,
-      fill: '#FF0000',
-      name:"menu_items"
-    }
-  );
-  
-  canvas.add(menuItemBgr);
-  canvas.add(menuItem);
+  return menuItem;//canvas.add(menuItem);
 }
 /**
  * @param { fabric.IEvent<Event>} elem
@@ -228,7 +239,3 @@ fabric.Canvas.prototype.getItemsByName = function(name) {
 //Extension for contextmenu
 fabric.Canvas.prototype.contextMenuVisible = false;
 
-function resizeCanvas() {
-  canvas.setHeight(window.innerHeight*0.8);
-  canvas.setWidth(window.innerWidth*0.74);
-}
