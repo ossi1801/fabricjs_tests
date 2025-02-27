@@ -151,11 +151,15 @@ function showCustomContextMenu(event, show = true) {
 
     var menuItemBgr = new Rect(
       {
-        left: pointer.x,
+        //left:  pointer.x,
         top:  pointer.y,
+        originX: 'left',
+        //originY: 'center',
         width: 200,
         height: 100,
-        fill: '#000000',   
+        rx: 5,
+        ry: 5,
+        fill: '#313131',   
         hasControls: false,
         hasBorders: false,
         selectable: false,
@@ -176,13 +180,11 @@ function showCustomContextMenu(event, show = true) {
     });
     canvas.add(group);
     canvas.renderAll();
-    //TODO create group for menu items  => name the group => check if delete destroys entire group
-    //if yes menuItem name(s) can be used as id's ?
   }
   else if (show == false && canvas.contextMenuVisible) {
-    var menu_items = canvas.getItemsByName("menu_group");
+    var menu_group = canvas.getItemsByName("menu_group");
     //console.log(menu_items);
-    canvas.remove(...menu_items); //remove automaticallly renders the page after remove
+    canvas.remove(...menu_group); //remove automaticallly renders the page after remove
     canvas.contextMenuVisible = false;
   }
 
@@ -195,19 +197,26 @@ function showCustomContextMenu(event, show = true) {
  */
 function createContextMenuItem(item_text,event,delegate,offset=0){
   var pointer = canvas.getPointer(event.e);
+  var fillColor = '#cccccc';
+  var activeColor =  '#8f8e8b';
   var menuItem = new IText(item_text, {
-    left: pointer.x+10,
-    top: pointer.y+10+offset,
+    left: 15,//pointer.x+10,
+    top: pointer.y+15+offset,
+    originX: 'left',
+    //originY: 'center',
     fontSize: 20,
     lockUniScaling: true,
     fontFamily: "arial",
-    fill: '#FF0000',
+    fill: fillColor,
     hoverCursor: "pointer",
     name : "menu_texts" //tag the object
   });
   menuItem.hasControls = false;
   menuItem.hasBorders = false;
-  menuItem.on("mousedown", elem => delegate(elem)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
+  //fabric.util.
+  menuItem.on("mousedown", e => delegate(e)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
+  menuItem.on("mouseover", e => {e.target.set("fill" , activeColor); canvas.renderAll();});
+  menuItem.on("mouseout", e => {e.target.set("fill" , fillColor); canvas.renderAll();});
   // canvas.on("mouse:over",(e) => {
   //   console.log(e);
   //   if(e.target){
@@ -239,3 +248,36 @@ fabric.Canvas.prototype.getItemsByName = function(name) {
 //Extension for contextmenu
 fabric.Canvas.prototype.contextMenuVisible = false;
 
+// RoundedRect allows rounding each corner of a rect individually.
+// const RoundedRect = new fabric.util.createClass(fabric.Rect, {
+//   type: "roundedRect",
+//   topLeft: [20, 20],
+//   topRight: [20, 20],
+//   bottomLeft: [20, 20],
+//   bottomRight: [20, 20],
+//   _render: function(ctx) {
+//     var w = this.width,
+//       h = this.height,
+//       x = -this.width / 2,
+//       y = -this.height / 2,
+//       /* "magic number" for bezier approximations of arcs (http://itc.ktu.lt/itc354/Riskus354.pdf) */
+//       k = 1 - 0.5522847498;
+//     ctx.beginPath();
+//     // top left
+//     ctx.moveTo(x + this.topLeft[0], y);
+//     // line to top right
+//     ctx.lineTo(x + w - this.topRight[0], y);
+//     ctx.bezierCurveTo(x + w - k * this.topRight[0], y, x + w, y + k * this.topRight[1], x + w, y + this.topRight[1]);
+//     // line to bottom right
+//     ctx.lineTo(x + w, y + h - this.bottomRight[1]);
+//     ctx.bezierCurveTo(x + w, y + h - k * this.bottomRight[1], x + w - k * this.bottomRight[0], y + h, x + w - this.bottomRight[0], y + h);
+//     // line to bottom left
+//     ctx.lineTo(x + this.bottomLeft[0], y + h);
+//     ctx.bezierCurveTo(x + k * this.bottomLeft[0], y + h, x, y + h - k * this.bottomLeft[1], x, y + h - this.bottomLeft[1]);
+//     // line to top left
+//     ctx.lineTo(x, y + this.topLeft[1]);
+//     ctx.bezierCurveTo(x, y + k * this.topLeft[1], x + k * this.topLeft[0], y, x + this.topLeft[0], y);
+//     ctx.closePath();
+//     this._renderPaintInOrder(ctx);
+//   }
+// })
