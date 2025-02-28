@@ -171,7 +171,8 @@ function showCustomContextMenu(event, show = true) {
     var item1 = createContextMenuItem("Menu item 1",event,menuItemClicked);
     var item2 = createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y),30);
     var item3 = createContextMenuItem("Add new rectangle",event, e => alert("TODO RECTANGLE?"),60);
-    var itemArray = [menuBgr,item1, item2,item3 ];
+    var item4 = createContextMenuItem("Add new object   >",event, e => alert("TODO RECTANGLE?"),90,true);
+    var itemArray = [menuBgr,item1, item2,item3,item4 ];
     var group = new fabric.Group(itemArray, {
       left:  pointer.x,
       top: pointer.y,     
@@ -193,13 +194,18 @@ function showCustomContextMenu(event, show = true) {
   }
 
 }
+
+function createContextMenuGroup(){
+  
+}
+
 /**
  * @param { String} item_text
  * @param { fabric.IEvent<MouseEvent>} event
  * @param { Function} delegate
  * @returns {fabric.Group}
  */
-function createContextMenuItem(item_text,event,delegate,offset=0){
+function createContextMenuItem(item_text,event,delegate,offset=0,spacer = false){
   var pointer = canvas.getPointer(event.e);
   var fillColor = '#313131';
   var activeColor =  '#0094ff'; //#384a57
@@ -214,7 +220,7 @@ function createContextMenuItem(item_text,event,delegate,offset=0){
       rx: 5,
       ry: 5,
       fill: '#313131',
-      opacity: 0.1,
+      //opacity: 0.1,
       hasControls: false,
       hasBorders: false,
       hoverCursor: "pointer",
@@ -239,14 +245,37 @@ function createContextMenuItem(item_text,event,delegate,offset=0){
     hasBorders: false,
     selectable: false,
   });
-  var menuItem = new Group([menuText,menuItemBgr],{
+  var menuItem = new Group([menuItemBgr,menuText],{
     hasControls: false,
     hasBorders: false,
     subTargetCheck: true
   });
-  menuItemBgr.on("mousedown", e => delegate(e)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
-  menuItemBgr.on("mouseover", e => {e.target.set("fill" , activeColor); canvas.renderAll();});
-  menuItemBgr.on("mouseout", e => {e.target.set("fill" , fillColor); canvas.renderAll();});
+  if(spacer){
+    var spacerRect = new Rect(
+      {
+        //left:  pointer.x,
+        top: pointer.y+10+offset,
+        originX: 'left',
+        //originY: 'center',
+        width: 200,
+        height: 2,
+        rx: 5,
+        ry: 5,
+        fill: '#ffffff',
+        opacity: 0.1,
+        hasControls: false,
+        hasBorders: false,
+        hoverCursor: "pointer",
+        selectable: false,
+        //hoverCursor: "default",
+        name:""
+      }
+    );
+    menuItem.add(spacerRect);
+  }
+  menuItem.on("mousedown", e => delegate(e)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
+  menuItem.on("mouseover", ()=> {menuItemBgr.set("fill" , activeColor); canvas.renderAll();});
+  menuItem.on("mouseout", () => {menuItemBgr.set("fill" , fillColor); canvas.renderAll();});
 
   return menuItem;//canvas.add(menuItem);
 }
@@ -257,51 +286,3 @@ function menuItemClicked(elem){
   alert("You just clicked "+ elem.target?.text);
 }
 
-
-//Extension function for fabric add the custom code from fabric.d.ts to get doc
-fabric.Canvas.prototype.getItemsByName = function(name) {
-  var objectList = [],
-      objects = this.getObjects();
-  for (var i = 0, len = this.size(); i < len; i++) {
-    if (objects[i].name && objects[i].name === name) {
-      objectList.push(objects[i]);
-    }
-  }
-  return objectList;
-};
-//Extension for contextmenu
-fabric.Canvas.prototype.contextMenuVisible = false;
-
-// RoundedRect allows rounding each corner of a rect individually.
-// const RoundedRect = new fabric.util.createClass(fabric.Rect, {
-//   type: "roundedRect",
-//   topLeft: [20, 20],
-//   topRight: [20, 20],
-//   bottomLeft: [20, 20],
-//   bottomRight: [20, 20],
-//   _render: function(ctx) {
-//     var w = this.width,
-//       h = this.height,
-//       x = -this.width / 2,
-//       y = -this.height / 2,
-//       /* "magic number" for bezier approximations of arcs (http://itc.ktu.lt/itc354/Riskus354.pdf) */
-//       k = 1 - 0.5522847498;
-//     ctx.beginPath();
-//     // top left
-//     ctx.moveTo(x + this.topLeft[0], y);
-//     // line to top right
-//     ctx.lineTo(x + w - this.topRight[0], y);
-//     ctx.bezierCurveTo(x + w - k * this.topRight[0], y, x + w, y + k * this.topRight[1], x + w, y + this.topRight[1]);
-//     // line to bottom right
-//     ctx.lineTo(x + w, y + h - this.bottomRight[1]);
-//     ctx.bezierCurveTo(x + w, y + h - k * this.bottomRight[1], x + w - k * this.bottomRight[0], y + h, x + w - this.bottomRight[0], y + h);
-//     // line to bottom left
-//     ctx.lineTo(x + this.bottomLeft[0], y + h);
-//     ctx.bezierCurveTo(x + k * this.bottomLeft[0], y + h, x, y + h - k * this.bottomLeft[1], x, y + h - this.bottomLeft[1]);
-//     // line to top left
-//     ctx.lineTo(x, y + this.topLeft[1]);
-//     ctx.bezierCurveTo(x, y + k * this.topLeft[1], x + k * this.topLeft[0], y, x + this.topLeft[0], y);
-//     ctx.closePath();
-//     this._renderPaintInOrder(ctx);
-//   }
-// })
