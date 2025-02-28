@@ -15,6 +15,16 @@ fabric.Canvas.prototype.getItemsByName = function(name) {
     return objectList;
   };
 
+  fabric.Canvas.prototype.getItemsByTaggedName = function(name) {
+    var objectList = [],
+        objects = this.getObjects();
+    for (var i = 0, len = this.size(); i < len; i++) {
+      if (objects[i].name && objects[i].name?.includes(name)) {
+        objectList.push(objects[i]);
+      }
+    }
+    return objectList;
+  };
 
 
 

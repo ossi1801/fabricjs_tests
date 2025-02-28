@@ -149,6 +149,39 @@ function showCustomContextMenu(event, show = true) {
     canvas.contextMenuVisible = true;
     var pointer = canvas.getPointer(event.e);
 
+    var item1 = createContextMenuItem("Menu item 1",pointer,menuItemClicked);
+    var item2 = createContextMenuItem("Add new text",pointer, e => addText(pointer.x,pointer.y));
+    var item3 = createContextMenuItem("Add new rectangle",pointer, e => alert("TODO RECTANGLE?"));
+    var item4 = createContextMenuItem("Add new object   >",pointer,(()=>void 0),0,true,"sub_menu_group");
+    var itemArray = [item1, item2,item3,item4 ];
+    createContextMenuGroup(itemArray,pointer);
+
+    pointer.x +=200;
+    pointer.y +=100;
+    var sub_item1 = createContextMenuItem("Sub Menu item 1",pointer,menuItemClicked);
+    var sub_item2 = createContextMenuItem("Sub Menu item 2",pointer,menuItemClicked);
+    var sub_item3 = createContextMenuItem("Sub Menu item 3",pointer,menuItemClicked);
+    var sub_item4 = createContextMenuItem("Sub Menu item 4",pointer,menuItemClicked);
+    var sub_itemArray = [sub_item1, sub_item2,sub_item3,sub_item4];
+    createContextMenuGroup(sub_itemArray,pointer,false);
+
+    canvas.renderAll();
+  }
+  else if (show == false && canvas.contextMenuVisible) {
+    var menu_group = canvas.getItemsByTaggedName("menu_group");
+    //console.log(menu_items);
+    canvas.remove(...menu_group); //remove automaticallly renders the page after remove
+    canvas.contextMenuVisible = false;
+  }
+
+}
+/**
+ * 
+ * @param {fabric.Object[]} itemArray 
+ * @param {*} pointer 
+ * @param {Boolean} isMainMenu 
+ */
+function createContextMenuGroup(itemArray,pointer,isMainMenu=true){
     var menuBgr = new Rect(
       {
         //left:  pointer.x,
@@ -166,47 +199,35 @@ function showCustomContextMenu(event, show = true) {
         hoverCursor: "default",
         name:""
       }
-    );
-    //Todo add "spacer" option that draws a line in context menu below an item
-    var item1 = createContextMenuItem("Menu item 1",event,menuItemClicked);
-    var item2 = createContextMenuItem("Add new text",event, e => addText(pointer.x,pointer.y),30);
-    var item3 = createContextMenuItem("Add new rectangle",event, e => alert("TODO RECTANGLE?"),60);
-    var item4 = createContextMenuItem("Add new object   >",event, e => alert("TODO RECTANGLE?"),90,true);
-    var itemArray = [menuBgr,item1, item2,item3,item4 ];
+    );  
+    for (let index = 0; index < itemArray.length; index++) {
+      itemArray[index].top += index * 30;
+    }
+    itemArray.unshift(menuBgr);//adds bgr to array as first item
     var group = new fabric.Group(itemArray, {
       left:  pointer.x,
       top: pointer.y,     
       hasControls: false,
       hasBorders: false,
+      visible: isMainMenu,
       //selectable: false,
-      name : "menu_group",
+      name : isMainMenu ? "menu_group":"sub_menu_group",
       subTargetCheck: true // allows the 
     });
     menuBgr.set("height", 20+ (itemArray.length-1)*30); // Dynamic sizing
     canvas.add(group);
-    canvas.renderAll();
-  }
-  else if (show == false && canvas.contextMenuVisible) {
-    var menu_group = canvas.getItemsByName("menu_group");
-    //console.log(menu_items);
-    canvas.remove(...menu_group); //remove automaticallly renders the page after remove
-    canvas.contextMenuVisible = false;
-  }
-
-}
-
-function createContextMenuGroup(){
-  
 }
 
 /**
  * @param { String} item_text
- * @param { fabric.IEvent<MouseEvent>} event
+ * @param { *} pointer
  * @param { Function} delegate
+ * @param { Number} offset
+ * @param { Boolean}spacer
+ * @param { String}subMenuTrigger
  * @returns {fabric.Group}
  */
-function createContextMenuItem(item_text,event,delegate,offset=0,spacer = false){
-  var pointer = canvas.getPointer(event.e);
+function createContextMenuItem(item_text,pointer,delegate,offset=0,spacer = false,subMenuTrigger=""){
   var fillColor = '#313131';
   var activeColor =  '#0094ff'; //#384a57
   var menuItemBgr = new Rect(
@@ -273,9 +294,17 @@ function createContextMenuItem(item_text,event,delegate,offset=0,spacer = false)
     );
     menuItem.add(spacerRect);
   }
+
   menuItem.on("mousedown", e => delegate(e)); //Binds on function to a user defined delegate passes element that was clicked to that delegate
-  menuItem.on("mouseover", ()=> {menuItemBgr.set("fill" , activeColor); canvas.renderAll();});
-  menuItem.on("mouseout", () => {menuItemBgr.set("fill" , fillColor); canvas.renderAll();});
+  menuItem.on("mouseover", () => {
+    if (subMenuTrigger && subMenuTrigger.length != 0) {
+      var x = canvas.getItemsByName("sub_menu_group");
+      x.forEach(x=>x.set("visible",true));
+    }
+    menuItemBgr.set("fill", activeColor);
+    canvas.renderAll();
+  });
+  menuItem.on("mouseout", () => { menuItemBgr.set("fill", fillColor); canvas.renderAll(); });
 
   return menuItem;//canvas.add(menuItem);
 }
