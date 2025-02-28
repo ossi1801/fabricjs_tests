@@ -293,17 +293,31 @@ interface ICollection<T> {
      */
     getObjects(type?: string): Object[];
     /**
-     * Returns an array of children objects of this instance
-     * Function introduced by fabric_extensions.js
+     * @returns Returns an array of children objects of this instance
+     * @see Function introduced by fabric_extensions.js
      * @param [name] When specified, only objects that have this name are returned
      */
     getItemsByName(name?: string):Object[];
      /**
-     * Returns an array of children objects of this instance.
-     * Function introduced by fabric_extensions.js
+     * @returns Returns an array of children objects of this instance.
+     * @see Function introduced by fabric_extensions.js
      * @param [nametag] When specified, objects that include the nametag param in their name are returned
      */
      getItemsByTaggedName(nametag?: string):Object[];
+     /**
+     * @returns Returns void
+     * @see Function introduced by fabric_extensions.js
+     * @emits A Save call to current canvas params are stored in "var json;"
+     */
+     Save():void;
+     /**
+     * @returns Returns void
+     * @see Function introduced by fabric_extensions.js
+     * @emits Load call to current "var json;" to load canvas params back 
+     */
+     Load():void;
+
+
     /**
      * Returns true if context menu is currently visible
      * Introduced by fabric_custom.js custom program

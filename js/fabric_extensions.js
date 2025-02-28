@@ -27,6 +27,33 @@ fabric.Canvas.prototype.getItemsByName = function(name) {
   };
 
 
+ //Save/Load testing 
+var json;
+fabric.Canvas.prototype.Save = function () {
+    json = canvas.toJSON();
+    canvas.clear();
+    //console.log(JSON.stringify(json));
+};
+fabric.Canvas.prototype.Load = function () {
+    if (json) {
+        canvas.loadFromJSON(json,
+            ()=>void 0,
+            () => _load(canvas)
+            
+        );
+    } else {
+
+    }
+};
+/**
+ * 
+ * @param {fabric.Canvas} canvas 
+ */
+function _load(canvas) {
+    //console.log(canvas);
+    canvas.renderAll(); //do not use render all causes canvas to not render,because the call is made for each object(?)
+}
+
 
 // RoundedRect allows rounding each corner of a rect individually.
 // const RoundedRect = new fabric.util.createClass(fabric.Rect, {

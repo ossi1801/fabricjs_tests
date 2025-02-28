@@ -149,8 +149,8 @@ function showCustomContextMenu(event, show = true) {
     canvas.contextMenuVisible = true;
     var pointer = canvas.getPointer(event.e);
 
-    var item1 = createContextMenuItem("Menu item 1",pointer,menuItemClicked);
-    var item2 = createContextMenuItem("Menu item 2",pointer,menuItemClicked);
+    var item1 = createContextMenuItem("Save canvas",pointer,canvas.Save);
+    var item2 = createContextMenuItem("Load canvas(var)",pointer,canvas.Load);
     var item3 = createContextMenuItem("Menu item 3",pointer,menuItemClicked);
     var item4 = createContextMenuItem("Add new object   >",pointer,(()=>void 0),0,true,"sub_menu_group");
     var itemArray = [item1, item2,item3,item4 ];
