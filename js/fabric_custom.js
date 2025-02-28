@@ -150,17 +150,17 @@ function showCustomContextMenu(event, show = true) {
     var pointer = canvas.getPointer(event.e);
 
     var item1 = createContextMenuItem("Menu item 1",pointer,menuItemClicked);
-    var item2 = createContextMenuItem("Add new text",pointer, e => addText(pointer.x,pointer.y));
-    var item3 = createContextMenuItem("Add new rectangle",pointer, e => alert("TODO RECTANGLE?"));
+    var item2 = createContextMenuItem("Menu item 2",pointer,menuItemClicked);
+    var item3 = createContextMenuItem("Menu item 3",pointer,menuItemClicked);
     var item4 = createContextMenuItem("Add new object   >",pointer,(()=>void 0),0,true,"sub_menu_group");
     var itemArray = [item1, item2,item3,item4 ];
     createContextMenuGroup(itemArray,pointer);
 
     pointer.x +=200;
     pointer.y +=100;
-    var sub_item1 = createContextMenuItem("Sub Menu item 1",pointer,menuItemClicked);
-    var sub_item2 = createContextMenuItem("Sub Menu item 2",pointer,menuItemClicked);
-    var sub_item3 = createContextMenuItem("Sub Menu item 3",pointer,menuItemClicked);
+    var sub_item1 = createContextMenuItem("Add new text",pointer, e => addText(pointer.x,pointer.y));
+    var sub_item2 = createContextMenuItem("Add new Image",pointer, e => alert("TODO Image?"));
+    var sub_item3 = createContextMenuItem("Add new rectangle",pointer, e => alert("TODO RECTANGLE?"));
     var sub_item4 = createContextMenuItem("Sub Menu item 4",pointer,menuItemClicked);
     var sub_itemArray = [sub_item1, sub_item2,sub_item3,sub_item4];
     createContextMenuGroup(sub_itemArray,pointer,false);
