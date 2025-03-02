@@ -4,54 +4,54 @@
 fabric.Canvas.prototype.contextMenuVisible = false;
 
 //Extension function for fabric add the custom code from fabric.d.ts to get doc
-fabric.Canvas.prototype.getItemsByName = function(name) {
-    var objectList = [],
-        objects = this.getObjects();
-    for (var i = 0, len = this.size(); i < len; i++) {
-      if (objects[i].name && objects[i].name === name) {
-        objectList.push(objects[i]);
-      }
+fabric.Canvas.prototype.getItemsByName = function (name) {
+  var objectList = [],
+    objects = this.getObjects();
+  for (var i = 0, len = this.size(); i < len; i++) {
+    if (objects[i].name && objects[i].name === name) {
+      objectList.push(objects[i]);
     }
-    return objectList;
-  };
+  }
+  return objectList;
+};
 
-  fabric.Canvas.prototype.getItemsByTaggedName = function(name) {
-    var objectList = [],
-        objects = this.getObjects();
-    for (var i = 0, len = this.size(); i < len; i++) {
-      if (objects[i].name && objects[i].name?.includes(name)) {
-        objectList.push(objects[i]);
-      }
+fabric.Canvas.prototype.getItemsByTaggedName = function (name) {
+  var objectList = [],
+    objects = this.getObjects();
+  for (var i = 0, len = this.size(); i < len; i++) {
+    if (objects[i].name && objects[i].name?.includes(name)) {
+      objectList.push(objects[i]);
     }
-    return objectList;
-  };
+  }
+  return objectList;
+};
 
 
- //Save/Load testing 
+//Save/Load testing 
 var json;
 fabric.Canvas.prototype.Save = function () {
-    json = canvas.toJSON();
-    canvas.clear();
-    //console.log(JSON.stringify(json));
+  json = canvas.toJSON();
+  canvas.clear();
+  //console.log(JSON.stringify(json));
 };
 fabric.Canvas.prototype.Load = function () {
-    if (json) {
-        canvas.loadFromJSON(json,
-            ()=>void 0,
-            () => _load(canvas)
-            
-        );
-    } else {
+  if (json) {
+    canvas.loadFromJSON(json,
+      () => void 0,
+      () => _load(canvas)
 
-    }
+    );
+  } else {
+
+  }
 };
 /**
  * 
  * @param {fabric.Canvas} canvas 
  */
 function _load(canvas) {
-    //console.log(canvas);
-    canvas.renderAll(); //do not use render all causes canvas to not render,because the call is made for each object(?)
+  //console.log(canvas);
+  canvas.renderAll(); //do not use render all causes canvas to not render,because the call is made for each object(?)
 }
 
 
@@ -88,3 +88,78 @@ function _load(canvas) {
 //     this._renderPaintInOrder(ctx);
 //   }
 // })
+
+
+fabric.Object.prototype.restrictMovementAndEditing = function () {
+  // If this object is currently active, clear the selection
+  if (this.canvas && this.canvas.getActiveObject() === this) {
+    this.canvas.discardActiveObject();
+    this.canvas.requestRenderAll(); // Ensure canvas updates
+  }
+  // If this object is part of a group selection
+  else if (this.canvas && this.canvas.getActiveObjects().includes(this)) {
+    this.canvas.discardActiveObject();
+    this.canvas.requestRenderAll();
+  }
+
+  // Store original properties if needed for potential restoration
+  this._originalProperties = {
+    lockMovementX: this.lockMovementX,
+    lockMovementY: this.lockMovementY,
+    lockScalingX: this.lockScalingX,
+    lockScalingY: this.lockScalingY,
+    lockRotation: this.lockRotation,
+    selectable: this.selectable,
+    hasControls: this.hasControls,
+    hasBorders: this.hasBorders,
+    hoverCursor: this.hoverCursor,
+    normalMode: false,
+  };
+  this.normalMode= true;
+  // Disable movement
+  this.lockMovementX = true;
+  this.lockMovementY = true;
+
+  // Disable scaling
+  this.lockScalingX = true;
+  this.lockScalingY = true;
+
+  // Disable rotation
+  this.lockRotation = true;
+
+  // Disable selection and controls
+  this.selectable = false;
+  this.hasControls = false;
+  this.hasBorders = false;
+
+  // Maintain event capability
+  this.evented = true;
+
+  // Check if object has a mousedown event listener and set cursor
+  if (this.__eventListeners && this.__eventListeners['mousedown']) {
+    this.hoverCursor = 'pointer';
+  }
+
+  // Override the on method to check for mousedown events
+  // const originalOn = this.on;
+  // this.on = function(eventName, handler) {
+  //     originalOn.call(this, eventName, handler);
+  //     if (eventName === 'mousedown') {
+  //         this.hoverCursor = 'pointer';
+  //     }
+  //     return this;
+  // };
+
+  return this; // Allow method chaining
+};
+
+// Optional: Add a method to restore original properties
+fabric.Object.prototype.restoreMovementAndEditing = function () {
+  if (this._originalProperties) {
+    Object.keys(this._originalProperties).forEach(key => {
+      this[key] = this._originalProperties[key];
+    });
+    delete this._originalProperties;
+  }
+  return this;
+};

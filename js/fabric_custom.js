@@ -15,6 +15,11 @@ $(function () { //onstart
   //https://api.jquery.com/jQuery.holdReady/
   //$.when(canvas,$.ready).done( () =>{ //when canvas is loaded
 
+  $('#edit-mode-btn').on("click", function () {
+    enableEditMode();
+    //this.innerText
+    $('#edit-mode-btn').text("Edit:"+restrict);
+  });
   //click for submit (add text) 
   $('#add-text-btn').on("click", function () {
     addText(200,200);
@@ -94,6 +99,7 @@ function addText(x,y,txtfontsize = 40) {
     fill: '#000000'
   });
   // new_text.lockRotation = true; //rotate disable
+  new_text.on('mousedown',(e)=>{if(new_text.normalMode){alert(e.target.text);}});
   canvas.add(new_text);
   canvas.setActiveObject(new_text);
   //console.log("click",message);
@@ -315,3 +321,21 @@ function menuItemClicked(elem){
   alert("You just clicked "+ elem.target?.text);
 }
 
+var restrict =true;
+function enableEditMode(){
+  console.log(restrict);
+  if(restrict){
+    canvas.forEachObject((x)=> x.restrictMovementAndEditing());
+  }
+  else{
+    canvas.forEachObject((x)=> x.restoreMovementAndEditing());
+  }
+  restrict = !restrict;
+  //if(current){
+    // canvas.forEachObject((x)=> {
+    //   x.set('selectable',current);
+    //   x.set('hasBorders',current);
+    //   x.set('hasControls',current);
+    // });
+  //}
+}
