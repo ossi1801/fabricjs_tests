@@ -38,3 +38,26 @@ body {
     overflow: auto;
     text-align: center;
 }
+.btn {
+    background-color: #d1d1d1; /* Green */
+    border: solid 1px #000000;
+    color: rgb(0, 0, 0);
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background-color: #555555;
+    color: white;
+  }
+textarea{
+    min-width: 150px;
+    max-width: 250px;
+    min-height: 40px;
+    max-height: 40px;
+}
