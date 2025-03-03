@@ -1,5 +1,11 @@
 //@ts-check
 
+function guidGenerator() {
+  var S4 = function() {
+     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  };
+  return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4()); //TODO SHORTER ID ???
+}
 //Extension for contextmenu
 fabric.Canvas.prototype.contextMenuVisible = false;
 
@@ -28,19 +34,22 @@ fabric.Canvas.prototype.getItemsByTaggedName = function (name) {
 
 
 //Save/Load testing 
-var json;
+const eventRegistry = {};  // store object IDs and their event handlers
+var data; //store as test "db" like object (only for testing purposes)
 fabric.Canvas.prototype.Save = function () {
-  json = canvas.toJSON();
+  data = canvas.toObject(['id','normalMode']); // Include the custom propertys
+  //console.log('Serialized JSON:', JSON.stringify(data, null, 2)); 
+  //ya its not .toJSON() but => toObject() 
+  // nice breaking change tojson works but not with custom props []
   canvas.clear();
-  //console.log(JSON.stringify(json));
 };
 fabric.Canvas.prototype.Load = function () {
-  if (json) {
-    canvas.loadFromJSON(json,
-      () => void 0,
-      () => _load(canvas)
-
-    );
+  if (data) {
+    _load_with_custom();
+    // canvas.loadFromJSON(json,
+    //   () => void 0,
+    //   () => _load(canvas)
+    // );
   } else {
 
   }
@@ -52,6 +61,22 @@ fabric.Canvas.prototype.Load = function () {
 function _load(canvas) {
   //console.log(canvas);
   canvas.renderAll(); //do not use render all causes canvas to not render,because the call is made for each object(?)
+}
+function _load_with_custom() {
+  fabric.util.enlivenObjects(data.objects, {
+    reviver: (serializedObj, instance) => {
+      console.log(instance);
+        const callback = eventRegistry[instance.id];
+        if (callback) instance.on('mousedown', callback);
+    }
+}).then((enlivenedObjects) => {
+    canvas.clear();
+    enlivenedObjects.forEach((obj) => canvas.add(obj));
+    canvas.requestRenderAll();
+}).catch((error) => {
+    console.error('enlivenObjects failed:', error);
+});
+
 }
 
 
@@ -137,6 +162,12 @@ fabric.Object.prototype.restrictMovementAndEditing = function () {
 
   // Check if object has a mousedown event listener and set cursor
   if (this.__eventListeners && this.__eventListeners['mousedown']) {
+    // let custom_func = this.__eventListeners['mousedown'][2];
+    // if (custom_func) {
+    //   console.log(custom_func); //omfg
+    //   console.log(custom_func.name); //omfg
+    //   console.log(custom_func.toString()); //omfg
+    // }
     this.hoverCursor = 'pointer';
   }
 
@@ -163,3 +194,32 @@ fabric.Object.prototype.restoreMovementAndEditing = function () {
   }
   return this;
 };
+
+
+
+const commonFabricProperties = [
+  "left",
+  "top",
+  "fill",
+  "stroke",
+  "strokeWidth",
+  "opacity",
+  "visible",
+  //Below props are hazardous and should be integrated with getters and setters(somehow idk xD)
+  //"angle", cant change angle -> Object.rotate(angle)
+  //"width",
+  //"height",
+  //"scaleX",
+  //"scaleY",
+  //"selectable",
+  //"evented",
+  // "lockMovementX",
+  // "lockMovementY",
+  // "lockRotation",
+  // "lockScalingX"
+];
+function populateGenericPropList(){
+  for (var i = 0; i < commonFabricProperties.length; i++) {
+    //Can use key , value  ( or just string for both like here)
+    $('#prop-list').append('<option value="' + commonFabricProperties[i] + '">' + commonFabricProperties[i] + '</option>');
+}}

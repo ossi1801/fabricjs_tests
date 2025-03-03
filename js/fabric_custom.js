@@ -10,22 +10,22 @@ function resizeCanvas() {
   canvas.setWidth(window.innerWidth*0.84);
 }
 $(function () { //onstart
-  resizeCanvas();
+  resizeCanvas(); //scales to "full screen"
+  populateGenericPropList();//add selection list items
   canvas.contextMenuVisible = false;
-  //https://api.jquery.com/jQuery.holdReady/
-  //$.when(canvas,$.ready).done( () =>{ //when canvas is loaded
+
 
   $('#edit-mode-btn').on("click", function () {
     enableEditMode();
     //this.innerText
-    $('#edit-mode-btn').text("Edit:"+restrict);
+    $('#edit-mode-btn').text("Edit:" + restrict);
   });
   //click for submit (add text) 
   $('#add-text-btn').on("click", function () {
-    addText(200,200);
+    addText(200, 200);
     createObjects( //Array of images etc
       [
-        new CanvasObject(100, 100, 50, 50,true),
+        new CanvasObject(100, 100, 50, 50, true),
         new CanvasObject(200, 200, 50, 50)
       ]
     );
@@ -34,11 +34,24 @@ $(function () { //onstart
   $('#reset-orietation-btn').on("click", function () {
     resetAngle();
   });
+  //Set prop to value (user given)
+  $('#set-value-btn').on("click", function () {
+    let curr_prop = $("#prop-list").val();
+    let curr_prop_val = $("#prop-value").val();
+    let curr_obj = canvas.getActiveObject();
+    if (curr_prop && curr_prop_val && curr_obj) {
+      canvas.discardActiveObject();
+      curr_obj.set(curr_prop,curr_prop_val);
+      canvas.renderAll();
+    }
+    console.log();
+  });
+
   //If user presses delete on active object delete it
   $("body").on("keydown", (e) => {
     if (e.key === "Delete") {
       let a = canvas.getActiveObjects();
-      if (a.length>0) {
+      if (a.length > 0) {
         canvas.discardActiveObject(); //If not discard and user has multi selection then -> objects are not removed until left click???
         canvas.remove(...a);
       }
@@ -67,7 +80,7 @@ $(function () { //onstart
     // canvas.on('object:scaling', function(event) {
     //   )};
   });
-  canvas.on("object:rotating", function() {});
+  canvas.on("object:rotating", function () { });
   canvas.on('object:modified', function (event) {
     console.log(event);
     if (event.target) {
@@ -75,7 +88,6 @@ $(function () { //onstart
     }
   });
 
-  //})
 });
 
 //Create local point relative to parent-->
@@ -96,10 +108,16 @@ function addText(x,y,txtfontsize = 40) {
     fontSize: txtfontsize,
     lockUniScaling: true,
     fontFamily: "arial",
-    fill: '#000000'
+    fill: '#000000',
+    // id: 'text-001',
+    // normalMode:false, //
   });
+  new_text.set("id", guidGenerator());
+  new_text.set("normalMode",false); //
   // new_text.lockRotation = true; //rotate disable
-  new_text.on('mousedown',(e)=>{if(new_text.normalMode){alert(e.target.text);}});
+  new_text.on('mousedown',ObjectOnClickAlert.bind(new_text));
+  eventRegistry[new_text.id] =  ObjectOnClickAlert.bind(new_text);// Store the actual function reference
+
   canvas.add(new_text);
   canvas.setActiveObject(new_text);
   //console.log("click",message);
@@ -323,7 +341,7 @@ function menuItemClicked(elem){
 
 var restrict =true;
 function enableEditMode(){
-  console.log(restrict);
+  //console.log(restrict);
   if(restrict){
     canvas.forEachObject((x)=> x.restrictMovementAndEditing());
   }
@@ -339,3 +357,19 @@ function enableEditMode(){
     // });
   //}
 }
+
+/**
+ * 
+ * @param {fabric.IEvent<MouseEvent>} e 
+ */
+function ObjectOnClickAlert(e) {
+  if (this.normalMode && e.target && e.e.buttons == 1) {
+    alert(e.target.text);
+  }
+  else if(this.normalMode==undefined){
+    console.error("this.normalMode was null did you forget to initialize it????");
+  }
+
+}
+
+
