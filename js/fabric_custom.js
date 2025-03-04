@@ -13,7 +13,12 @@ $(function () { //onstart
   resizeCanvas(); //scales to "full screen"
   populateGenericPropList();//add selection list items
   canvas.contextMenuVisible = false;
-
+  // createObjects( //Array of images etc
+  //   [
+  //     new CanvasObject(100, 100, 50, 50, true),
+  //     new CanvasObject(200, 200, 50, 50)
+  //   ]
+  // );
 
   $('#edit-mode-btn').on("click", function () {
     enableEditMode();
@@ -21,19 +26,9 @@ $(function () { //onstart
     $('#edit-mode-btn').text("Edit:" + restrict);
   });
   //click for submit (add text) 
-  $('#add-text-btn').on("click", function () {
-    addText(200, 200);
-    createObjects( //Array of images etc
-      [
-        new CanvasObject(100, 100, 50, 50, true),
-        new CanvasObject(200, 200, 50, 50)
-      ]
-    );
-  });
+  $('#add-text-btn').on("click", ()=>addText(200, 200));
   //Reset object angle
-  $('#reset-orietation-btn').on("click", function () {
-    resetAngle();
-  });
+  $('#reset-orietation-btn').on("click", ()=>resetAngle());
   //Set prop to value (user given)
   $('#set-value-btn').on("click", function () {
     let curr_prop = $("#prop-list").val();

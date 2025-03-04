@@ -22,23 +22,43 @@
   <!-- Page Content -->
   <div class="page">
     <canvas id='canvas'></canvas>
-    <!-- <canvas id='canvas' width="1000" height="700" style="border:#000 1px solid;"></canvas> -->
-    <button class="btn" id="add-text-btn">Add text</button>
-    <textarea rows="2" id="add-text-value">Your Text Here</textarea>
-    <button class="btn" id="reset-orietation-btn">Reset orietation for active item</button>  
 
-    <button class="btn" id="set-value-btn">Set:</button> 
-    <select id="prop-list" name="proplist"></select>
-    <div id="">TO:</div>
-    <input id="prop-value"></input>
-
-    <br>
-    <div id="">Enable/Disable edit mode</div>
-    <button class="btn" id="edit-mode-btn">Edit:true</button>
-    <br>
-    <br>
-   
-   
+    <div class="toolbox">
+     
+      <button class="tool-button btn-reset" id="reset-orietation-btn">Reset orietation for active item</button>
+    
+      <div class="section-title">Set property to:</div>
+      <select class="tool-button btn-list" id="prop-list" name="proplist"></select>
+      <input placeholder="#ff0000 or 0.1" id="prop-value"></input>
+      <button class="tool-button btn-save" id="set-value-btn">Set</button>
+      <br>
+      <br>
+    
+      <div class="spacer"></div>
+      <div class="section-title">Enable/Disable edit mode</div>
+      <button class="tool-button btn-disable" id="edit-mode-btn">Edit:true</button>
+      <br>
+      <br>
+    
+      <!-- <div class="toolbox"> -->
+      <div class="section-title">Basic Widgets</div>
+      <button class="tool-button btn-button">Button</button>
+      <button id="add-text-btn" class="tool-button btn-text">Text Input</button>
+      <textarea placeholder="Your Text Here" rows="2" id="add-text-value"></textarea>
+      <button class="tool-button btn-label">Label</button>
+    
+      <div class="spacer"></div>
+      <div class="section-title">Containers</div>
+      <button class="tool-button btn-grid">Grid Layout</button>
+      <button class="tool-button btn-frame">Frame</button>
+      <button class="tool-button btn-tab">Tab Widget</button>
+    
+      <div class="spacer"></div>
+      <div class="section-title">Input Widgets</div>
+      <button class="tool-button btn-checkbox">Checkbox</button>
+      <button class="tool-button btn-radio">Radio Button</button>
+      <button class="tool-button btn-slider">Slider</button>
+    </div>
 </body>
 </div>
 

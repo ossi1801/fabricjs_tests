@@ -38,8 +38,8 @@ body {
     overflow: auto;
     text-align: center;
 }
-.btn {
-    background-color: #d1d1d1; /* Green */
+/* .btn {
+    background-color: #d1d1d1; 
     border: solid 1px #000000;
     color: rgb(0, 0, 0);
     padding: 16px 32px;
@@ -54,10 +54,68 @@ body {
   .btn:hover {
     background-color: #555555;
     color: white;
-  }
+  } */
 textarea{
     min-width: 150px;
     max-width: 250px;
     min-height: 40px;
     max-height: 40px;
 }
+
+
+
+
+/*TOOLBOX ----------------------------------------*/
+.toolbox {
+    width: 250px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    top: 250px;
+    left: 10px;
+    z-index: 1000;
+}
+
+.section-title {
+    background-color: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 3px;
+    margin: 5px 0;
+    font: bold 16px Arial, sans-serif;
+}
+
+.tool-button {
+    width: 100%;
+    padding: 8px 8px 8px 30px;
+    margin: 2px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: white no-repeat 8px center/16px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.tool-button:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+}
+
+.spacer {
+    height: 8px;
+}
+
+.btn-button { background-image: url('/images/icons/handbag.svg'); }
+.btn-text { background-image: url('/images/icons/input-cursor-text.svg'); }
+.btn-label { background-image: url('/images/icons/fonts.svg'); }
+.btn-grid { background-image: url('/images/icons/grid-3x3.svg'); }
+.btn-frame { background-image: url('/images/icons/layout-text-window.svg'); }
+.btn-tab { background-image: url('/images/icons/card-list.svg'); }
+.btn-checkbox { background-image: url('/images/icons/check-square.svg'); }
+.btn-radio { background-image: url('/images/icons/ui-radios.svg'); }
+.btn-slider { background-image: url('/images/icons/sliders.svg'); }
+.btn-disable{ background-image: url('/images/icons/lock.svg');}
+.btn-save{background-image: url('/images/icons/floppy.svg');} 
+.btn-list{background-image: url('/images/icons/gear-fill.svg');} /*.btn-list{background-image: url('/images/icons/card-list.svg');}*/
+.btn-reset{background-image: url('/images/icons/arrow-counterclockwise.svg');} 
