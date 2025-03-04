@@ -106,16 +106,16 @@ textarea{
     height: 8px;
 }
 
-.btn-button { background-image: url('/images/icons/handbag.svg'); }
-.btn-text { background-image: url('/images/icons/input-cursor-text.svg'); }
-.btn-label { background-image: url('/images/icons/fonts.svg'); }
-.btn-grid { background-image: url('/images/icons/grid-3x3.svg'); }
-.btn-frame { background-image: url('/images/icons/layout-text-window.svg'); }
-.btn-tab { background-image: url('/images/icons/card-list.svg'); }
-.btn-checkbox { background-image: url('/images/icons/check-square.svg'); }
-.btn-radio { background-image: url('/images/icons/ui-radios.svg'); }
-.btn-slider { background-image: url('/images/icons/sliders.svg'); }
-.btn-disable{ background-image: url('/images/icons/lock.svg');}
-.btn-save{background-image: url('/images/icons/floppy.svg');} 
-.btn-list{background-image: url('/images/icons/gear-fill.svg');} /*.btn-list{background-image: url('/images/icons/card-list.svg');}*/
-.btn-reset{background-image: url('/images/icons/arrow-counterclockwise.svg');} 
+.btn-button { background-image: url('./images/icons/handbag.svg'); }
+.btn-text { background-image: url('./images/icons/input-cursor-text.svg'); }
+.btn-label { background-image: url('./images/icons/fonts.svg'); }
+.btn-grid { background-image: url('./images/icons/grid-3x3.svg'); }
+.btn-frame { background-image: url('./images/icons/layout-text-window.svg'); }
+.btn-tab { background-image: url('./images/icons/card-list.svg'); }
+.btn-checkbox { background-image: url('./images/icons/check-square.svg'); }
+.btn-radio { background-image: url('./images/icons/ui-radios.svg'); }
+.btn-slider { background-image: url('./images/icons/sliders.svg'); }
+.btn-disable{ background-image: url('./images/icons/lock.svg');}
+.btn-save{background-image: url('./images/icons/floppy.svg');} 
+.btn-list{background-image: url('./images/icons/gear-fill.svg');} /*.btn-list{background-image: url('./images/icons/card-list.svg');}*/
+.btn-reset{background-image: url('./images/icons/arrow-counterclockwise.svg');} 
