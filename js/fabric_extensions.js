@@ -140,6 +140,7 @@ fabric.Object.prototype.restrictMovementAndEditing = function () {
     hoverCursor: this.hoverCursor,
     normalMode: false,
   };
+  //console.log(this);
   this.normalMode= true;
   // Disable movement
   this.lockMovementX = true;

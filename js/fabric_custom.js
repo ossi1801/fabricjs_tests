@@ -105,7 +105,7 @@ function addText(x,y,txtfontsize = 40) {
     fontFamily: "arial",
     fill: '#000000',
     // id: 'text-001',
-    // normalMode:false, //
+    normalMode:false, //
   });
   new_text.set("id", guidGenerator());
   new_text.set("normalMode",false); //
@@ -358,13 +358,14 @@ function enableEditMode(){
  * @param {fabric.IEvent<MouseEvent>} e 
  */
 function ObjectOnClickAlert(e) {
-  if (this.normalMode && e.target && e.e.buttons == 1) {
-    alert(e.target.text);
+  // console.log(this);
+  // console.log("clicked n"+this.normalMode);
+  // console.log("clicked n"+ e.target.normalMode );
+  // console.log("clicked n"+e.e.buttons);
+  if (e.target&&e.target.normalMode  && e.e.buttons == 1) {  
+    let str = `id: '${e.target.id}'\nValue: '${e.target.text}'`;
+    alert(str);
   }
-  else if(this.normalMode==undefined){
-    console.error("this.normalMode was null did you forget to initialize it????");
-  }
-
 }
 
 
